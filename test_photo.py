@@ -51,10 +51,6 @@ checkpoint_path_p = './checkpoint/p'
 if not os.path.exists(checkpoint_path_p):
     os.mkdir(checkpoint_path_p)
 
-# checkpoint_path_C_load = './checkpoint/Component/m-1799-10.pth.tar'
-# checkpoint_path_A_load = './checkpoint/Attention/m-1999-10.pth.tar'
-# checkpoint_path_load = None
-
 utils.load_checkpoint(model_p, checkpoint_path_p + '/m-13-13.pth.tar', optimizer_p)
 
 testset = dataset(train=False)
@@ -84,6 +80,4 @@ def test(dataloader, model_p):
             utils.draw(infection[i, :], diagnosis[i, :], gt_infection[i, :], prediction[i, :],
                        gt_prediction[i, :], False, counter)
 
-# np.save('train_error.npy', np.array(train_error_record))
-# np.save('test_error.npy', np.array(test_error_record))
 test(testloader, model_p)
