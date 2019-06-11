@@ -32,15 +32,10 @@ def test_function(infection, diagnosis, alpha):
 
 
 def test_G_0_known(G0, diagnosis, alpha, infection, diagonsis_tmp):
-    max_number = 500
     min_len = min(len(infection), len(diagnosis))
     diagnosis = diagnosis[0: min_len]
-    # diagnosis = diagnosis[::10]
     if len(alpha) < min_len:
         alpha = np.concatenate((alpha, np.ones((min_len - len(alpha),)).astype(float)))
-    # alpha = alpha[::10]
-    # infection = infection[::10]
-    # min_len = len(diagnosis)
     alpha_diff = alpha.copy()
     alpha_diff[1:] = alpha[1:] - alpha[:-1]
     infection_pred = np.zeros(diagnosis.shape)
@@ -49,19 +44,12 @@ def test_G_0_known(G0, diagnosis, alpha, infection, diagonsis_tmp):
         tmp = diagnosis[i] - alpha[i] * G0
         for j in range(1, i):
             tmp -= alpha[i - j] * (infection_pred[j] - infection_pred[j - 1])
-        # infection_pred[i] = min(max(float(tmp) / alpha[0] + infection_pred[i - 1], infection_pred[i-1]), max_number)
-        # infection_pred[i] = min(float(tmp) / alpha[0] + infection_pred[i - 1], max_number)
         infection_pred[i] = float(tmp) / alpha[0] + infection_pred[i - 1]
-        # infection_pred[i] = float(tmp) / alpha[0] + infection_pred[i - 1]
-    # for i in range(0, len(infection_pred), 50):
-    #     infection_pred[i * 50: i * 50 + 50] = infection_pred[i * 50: i * 50 + 50].mean()
     plt.plot(diagnosis)
     plt.plot(infection_pred)
     plt.plot(infection)
     plt.plot(diagonsis_tmp)
-    # plt.legend(['polynomial fitting diagnosis', 'approximated infection', 'infection', 'diagnosis'])
     plt.legend(['approximated infection', 'infection', 'diagnosis'])
-    # plt.legend(['diagnosis', 'infection'])
     plt.savefig('o3.png')
     return infection_pred
 

@@ -16,12 +16,10 @@ parser.add_argument('--lr', type=float, default=5e-3,
                     help="learning rate")
 parser.add_argument('-b', '--batch-size', type=int, default=10,
                     help="batch size")
-parser.add_argument('-epochs', type=int, default=800,
+parser.add_argument('-epochs', type=int, default=15,
                     help="epochs size")
 parser.add_argument('-p', '--print-frequency', default=10,
                     help="the frequency of printing the value of loss")
-parser.add_argument('-i', '--img-frequency', default=10,
-                    help="the frequency of showing the image")
 parser.add_argument('--summary-dir', default='./summary', metavar='DIR',
                     help='path to save summary')
 parser.add_argument('--save-checkpoint-frequency', type=int, default=20,
@@ -44,16 +42,10 @@ model_p = Model.p_model(output_length=sequence_length)
 model_p = model_p.to(device)
 optimizer_p = optim.Adam(model_p.parameters(), lr=args.lr)
 
-checkpoint_path_g0 = './checkpoint/g0'
-if not os.path.exists(checkpoint_path_g0):
-    os.mkdir(checkpoint_path_g0)
-
-checkpoint_path_p = './checkpoint/p'
+checkpoint_path_p = './checkpoint'
 if not os.path.exists(checkpoint_path_p):
     os.mkdir(checkpoint_path_p)
 
-# checkpoint_path_C_load = './checkpoint/Component/m-1799-10.pth.tar'
-# checkpoint_path_A_load = './checkpoint/Attention/m-1999-10.pth.tar'
 checkpoint_path_load = None
 
 trainset = dataset(train=True)
@@ -105,7 +97,7 @@ def test(dataloader, model_p, writer, train):
 train_error_record = []
 test_error_record = []
 
-for epoch in range(15):  # loop over the dataset multiple times
+for epoch in range(args.epochs):  # loop over the dataset multiple times
     running_loss = 0
     train_error = 0
     test_error1, test_error2 = test(testloader, model_p, writer, train=False)
@@ -133,7 +125,7 @@ for epoch in range(15):  # loop over the dataset multiple times
         train_error += torch.sum(
             torch.abs(infection_tmp[gt_infection != 0] - gt_infection[gt_infection != 0]) / (
                 torch.abs(gt_infection[gt_infection != 0]))) / (infection.shape[1])
-        if batch_idx % 20 == 0:
+        if batch_idx % args.print_frequency == 0:
             print('epoch:', epoch, 'batch:', batch_idx, 'loss:', running_loss.item())
             running_loss = 0
             for i in range(args.batch_size):

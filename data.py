@@ -3,15 +3,13 @@ import numpy as np
 from torch.utils.data import Dataset
 
 
-
 class dataset(Dataset):
-    def __init__(self, diagnosis='diagnosis.npy', diagnosis_appr_file='diagnosis_appr.npy',
+    def __init__(self, diagnosis='diagnosis.npy',
                  infection_file='infection.npy', alpha_file='alpha.npy', ratio=0.8, train=True):
-        diagnosis_appr = np.load(diagnosis_appr_file)
         infection = np.load(infection_file)
         diagnosis = np.load(diagnosis)
         alpha = np.load(alpha_file)
-        sample_num = diagnosis_appr.shape[0]
+        sample_num = diagnosis.shape[0]
         train_number = int(ratio * sample_num)
         self.train_data = {}
         self.train_data['G0'] = infection[:train_number, 0]
